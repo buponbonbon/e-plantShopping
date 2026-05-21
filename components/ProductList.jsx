@@ -1,39 +1,32 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addItem } from '../store/CartSlice';
-import './ProductList.css';
+// 1. Mở rộng mảng dữ liệu (đảm bảo mỗi nhóm có đủ 6 cây)
+const plantsArray = [
+  { category: "Indoor", name: "Snake Plant", image: "...", cost: 20 },
+  { category: "Indoor", name: "Spider Plant", image: "...", cost: 15 },
+  // ... thêm đủ 6 cây cho nhóm Indoor
+  { category: "Outdoor", name: "Lavender", image: "...", cost: 15 },
+  // ... thêm đủ 6 cây cho nhóm Outdoor
+  { category: "Succulents", name: "Aloe Vera", image: "...", cost: 10 },
+  // ... thêm đủ 6 cây cho nhóm Succulents
+];
 
+// 2. Thay vì dùng 1 vòng lặp .map() cho tất cả, hãy nhóm chúng lại:
 function ProductList() {
-  const dispatch = useDispatch();
-  const cartItems = useSelector(state => state.cart.items);
-
-  const plantsArray = [
-    { category: "Indoor", name: "Snake Plant", image: "https://images.unsplash.com/photo-1593482858706-9467657d4766", cost: 20 },
-    { category: "Outdoor", name: "Lavender", image: "https://images.unsplash.com/photo-1611899938871-4775d7100780", cost: 15 },
-    { category: "Succulents", name: "Aloe Vera", image: "https://images.unsplash.com/photo-1532781914607-2031eca2f00d", cost: 10 }
-  ];
-
-  const handleAddToCart = (plant) => {
-    dispatch(addItem(plant));
-  };
-
   return (
-    <div className="product-list">
-      {plantsArray.map((plant, index) => (
-        <div key={index} className="product-card">
-          <img src={plant.image} alt={plant.name} style={{width: '200px'}} />
-          <h3>{plant.name}</h3>
-          <p>${plant.cost}</p>
-          <button 
-            onClick={() => handleAddToCart(plant)}
-            disabled={cartItems.some(item => item.name === plant.name)}
-          >
-            {cartItems.some(item => item.name === plant.name) ? "Added" : "Add to Cart"}
-          </button>
+    <div>
+      {["Indoor", "Outdoor", "Succulents"].map((category) => (
+        <div key={category}>
+          <h2>{category}</h2> {/* Đây là tiêu đề nhóm mà hệ thống yêu cầu */}
+          <div className="product-list">
+            {plantsArray
+              .filter(plant => plant.category === category)
+              .map(plant => (
+                <div key={plant.name} className="product-card">
+                  {/* ... render card sản phẩm như cũ ... */}
+                </div>
+              ))}
+          </div>
         </div>
       ))}
     </div>
   );
 }
-
-export default ProductList;
